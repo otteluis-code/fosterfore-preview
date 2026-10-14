@@ -1,0 +1,123 @@
+/* =========================================================
+   Foster Fore — Scroll-Animationen
+   Alle Bewegungen an einem Ort. Animiert werden nur transform,
+   opacity und clip-path. Ruhig, einmalig, ohne Überschwingen.
+   ========================================================= */
+
+/* ---------- Sanftes Scrollen (Lenis) ---------- */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-stopped { overflow: clip; }
+.lenis.lenis-smooth iframe { pointer-events: none; }
+
+/* Sektionen liegen über dem Kontakt (für den Vorhang) */
+.hero, .enables, .unframe, .clients, .delivering, .offer, .panel, .assembly, .team { position: relative; z-index: 1; }
+
+/* ---------- Lesefortschritt ---------- */
+.nav__progress {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: currentColor;
+  transform-origin: left center; transform: scaleX(var(--read, 0)); opacity: 0; transition: opacity .6s var(--ease);
+}
+.nav.is-scrolled .nav__progress { opacity: .7; }
+.nav.is-menu .nav__progress { opacity: 0; }
+
+/* ---------- Grund-Reveal ---------- */
+.js .reveal { opacity: 0; transform: translate3d(0, 18px, 0); transition: opacity 1s var(--ease-slow), transform 1.2s var(--ease-slow); transition-delay: var(--d, 0s); }
+.js .reveal.is-in { opacity: 1; transform: none; }
+
+/* ---------- 1 · Hero ---------- */
+.js .hero__logo { opacity: 0; transition: opacity 1.4s var(--ease) .1s; }
+.js .hero__title .line > span { transform: translate3d(0, 108%, 0); transition: transform 1.5s var(--ease-slow); }
+.js .hero__mono > span { transition-delay: .18s; transition-duration: 1.8s; }
+.js.is-loaded .hero__logo { opacity: 1; }
+.js.is-loaded .hero__title .line > span { transform: none; }
+
+/* Übergang: der dunkle Raum "Enables" schiebt sich über das bildschirmfüllende Gemälde,
+   mit weichem Verlauf an der Oberkante, sodass das Bild ins Schwarz hinüberfließt */
+@media (prefers-reduced-motion: no-preference) {
+  .js .enables { margin-top: -100vh; z-index: 2; }
+  .js .enables::before {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 100%; height: 45vh; pointer-events: none;
+    background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,.08) 20%, rgba(0,0,0,.26) 40%, rgba(0,0,0,.52) 60%, rgba(0,0,0,.8) 80%, #000);
+  }
+}
+
+/* ---------- 2 · Vignetten öffnen sich als Iris ---------- */
+.js .vignette.reveal { transform: none; }
+.js .vignette .vignette__img { clip-path: circle(0% at 50% 50%); transition: clip-path 1.6s var(--ease-slow); transition-delay: calc(var(--d, 0s) + .15s); }
+.js .vignette .vignette__img img { transform: scale(1.18); transition: transform 2.2s var(--ease-slow); transition-delay: calc(var(--d, 0s) + .15s); }
+.js .vignette .hex { opacity: 0; transition: opacity 1s var(--ease) calc(var(--d, 0s) + .9s); }
+.js .vignette.is-in .vignette__img { clip-path: circle(50% at 50% 50%); }
+.js .vignette.is-in .vignette__img img { transform: scale(1); }
+.js .vignette.is-in .hex { opacity: .8; }
+
+/* ---------- 4 · Aussagen: Linien zeichnen sich ---------- */
+.js .statements li::before { transform: scaleX(0); transform-origin: left center; transition: transform 1.5s var(--ease-slow); transition-delay: var(--d, 0s); }
+.js .statements li.is-in::before { transform: scaleX(1); }
+
+/* Zitat: Wort für Wort ins Licht */
+.ink-w { opacity: var(--wo, .2); transition: opacity .25s linear; }
+
+/* Kirschen im Kreis: Fenster-Parallaxe */
+.clients__circle img { transform: scale(1.14) translate3d(0, calc((var(--sp, .5) - .5) * 8%), 0); }
+
+/* ---------- 5 · Delivering: Zeilen steigen auf ---------- */
+.delivering__title .line > span { transform: translate3d(0, calc((1 - var(--t, 1)) * 108%), 0); }
+.delivering__title .line:nth-child(2) > span { transform: translate3d(0, calc((1 - var(--t2, 1)) * 108%), 0); }
+
+/* ---------- 6 · Kapitel-Titel steigen aus einer Maske ---------- */
+.js .chapter__title.reveal { opacity: 1; transform: none; }
+.chapter__mask { display: block; }
+.js .chapter__title.reveal .chapter__mask { clip-path: inset(0 0 100% 0); transform: translate3d(0, .3em, 0); transition: clip-path 1.5s var(--ease-slow), transform 1.5s var(--ease-slow); }
+.js .chapter__title.reveal.is-in .chapter__mask { clip-path: inset(-.2em 0 -.3em 0); transform: none; }
+
+/* ---------- 7 · Gemälde-Panel: Fenster-Parallaxe ---------- */
+.panel img { transform: translate3d(0, calc((var(--sp, .5) - .5) * 9%), 0); }
+
+/* ---------- 8 · Team ---------- */
+.team__title span:nth-child(1) { transform: translate3d(calc((var(--sp, .5) - .5) * 36px), 0, 0); }
+.team__title span:nth-child(2) { transform: translate3d(calc((var(--sp, .5) - .5) * -56px), 0, 0); }
+.team__title span:nth-child(3) { transform: translate3d(calc((var(--sp, .5) - .5) * 20px), 0, 0); }
+.js .person.reveal .person__photo img:not(.person__smile) { transform: scale(1.1); }
+.js .person.reveal.is-in .person__photo img:not(.person__smile) { transform: scale(1); }
+.js .person.reveal.is-in:hover .person__photo img,
+.js .person.reveal.is-in:focus-within .person__photo img { transform: scale(1.04); }
+
+/* ---------- 8b · Finale: Raum zum Atmen, während die Porträts zur Dreiheit finden ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .js .team { padding-bottom: calc(var(--section) + 55vh); }
+}
+
+/* ---------- 9 · Kontakt liegt unter der Seite (Vorhang) ---------- */
+.has-curtain .contact { position: sticky; bottom: 0; z-index: 0; }
+.has-curtain .contact::before {
+  content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background: var(--ink); opacity: calc((1 - var(--cp, 1)) * .5);
+}
+.has-curtain .contact__cluster,
+.has-curtain .contact__foot { transform: translate3d(0, calc((1 - var(--cp, 1)) * -56px), 0); }
+.has-curtain .team { transform: translateZ(0); }
+
+/* ---------- Mobil: ruhiger ---------- */
+@media (max-width: 760px) {
+  .team__title span:nth-child(n) { transform: none; }
+}
+
+/* ---------- Reduzierte Bewegung ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .team__title span, .panel img, .clients__circle img,
+  .has-curtain .contact__cluster, .has-curtain .contact__foot { transform: none !important; }
+  .hero { height: auto; }
+  .hero__sticky { position: relative; height: auto; display: flex; flex-direction: column; align-items: center; padding: 140px var(--gutter) 80px; gap: 48px; }
+  .hero__cluster, .hero__title { position: static; transform: none !important; }
+  .hero__stage { position: relative; left: auto; top: auto; order: 2; transform: none !important; width: min(100%, 1100px); }
+  .hero__piece, .hero__plate, .hero__veil { display: none; }
+  .hero__mono { font-size: 12vw; }
+  .ink-w { opacity: 1 !important; }
+  .js .vignette .vignette__img, .js .chapter__title.reveal .chapter__mask { clip-path: none !important; transform: none !important; }
+  .js .vignette .vignette__img img, .js .person.reveal .person__photo img { transform: none !important; }
+  .js .vignette .hex { opacity: .8; }
+  .js .statements li::before { transform: none !important; }
+  .has-curtain .contact::before { opacity: 0; }
+  .unite { display: none !important; }
+  .logo-part { opacity: 1 !important; transform: none !important; }
+}
